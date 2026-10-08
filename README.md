@@ -15,9 +15,6 @@
 - [ ] 引入 AI 驱动角色对话（大模型接入），即点即玩。
 
 ---
-
-## ⚠️ 注意事项
-
-*   本仓库仅用于个人项目与设定存档。
-*   所有角色设定、世界观版权归作者所有，未经允许请勿用于商业用途。
-*   由于 GitHub Pages 存在 100GB/月的流量软限制与单文件 100MB 的硬限制，未来游戏所需的图片、音频等大体积资源将采用外链形式，本仓库保持纯文本与代码的轻量级。
+## ⚖️ 版权声明 (Licensing)
+* **代码部分 (HTML/CSS/JS)**：采用 [Apache License 2.0](LICENSE) 开源，欢迎学习交流。
+* **内容部分 (角色设定、世界观、Markdown文本)**：版权归作者 AiorcaLin 所有。采用 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh) 协议。严禁任何商业用途，严禁修改后二次发布。如需授权请联系：[xieorca1@gmail.com]。
