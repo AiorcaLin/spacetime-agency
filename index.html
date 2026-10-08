@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时空管理局 - 角色档案库</title>
+    <style>
+        /* 核心变量：科幻配色 */
+        :root {
+            --bg-dark: #06080f;
+            --bg-card: rgba(15, 25, 45, 0.7);
+            --primary-glow: #00f3ff; /* 霓虹青色 */
+            --text-main: #e0e6ed;
+            --text-muted: #8892b0;
+        }
+
+        /* 全局样式 */
+        body {
+            font-family: 'Courier New', 'Microsoft YaHei', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 科幻网格背景 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* 顶部标题区 */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #fff;
+            margin: 0 0 15px 0;
+            letter-spacing: 8px;
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.8), 0 0 40px rgba(0, 243, 255, 0.4);
+            font-weight: 700;
+            animation: pulse 3s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { text-shadow: 0 0 20px rgba(0, 243, 255, 0.6); }
+            100% { text-shadow: 0 0 30px rgba(0, 243, 255, 1), 0 0 50px rgba(0, 243, 255, 0.5); }
+        }
+
+        .header p {
+            color: var(--primary-glow);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            margin: 0;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        /* 卡片容器网格 */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* 角色卡片 */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 4px;
+            padding: 25px 20px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* 卡片悬停光效 */
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 243, 255, 0.8);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.15), inset 0 0 15px rgba(0, 243, 255, 0.05);
+        }
+
+        /* 科幻角落装饰（左上和右下） */
+        .card::before, .card::after {
+            content: '';
+            position: absolute;
+            width: 12px; height: 12px;
+            border: 2px solid var(--primary-glow);
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+        .card::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+        .card::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+        .card:hover::before, .card:hover::after { opacity: 1; width: 16px; height: 16px; }
+
+        /* 卡片内容 */
+        .card h2 {
+            margin: 0 0 15px 0;
+            color: #fff;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0 0 25px 0;
+            flex-grow: 1;
+        }
+
+        /* 下载按钮 */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            text-align: center;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            color: var(--primary-glow);
+            background: transparent;
+            border: 1px solid var(--primary-glow);
+            border-radius: 2px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        /* 按钮悬停充能效果 */
+        .btn:hover {
+            background: var(--primary-glow);
+            color: var(--bg-dark);
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+            text-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>时空管理局</h1>
+        <p>SPACETIME AGENCY // 角色档案库</p>
+    </div>
+
+    <div class="card-container" id="cardList"></div>
+
+    <script>
+        // 这里是你现有的文件列表，如果以后文件重命名，记得在这里同步修改 file 字段
+        const characters = [
+            { name: "萧珩", desc: "大梁开国皇帝，前南齐宗室，少年英主，文人帝王。", file: "萧珩-v5.md" },
+            { name: "沈畅", desc: "南梁某公主府舍人，寒门出身，流外三品勋位。", file: "沈畅-v1.md" },
+            { name: "挂面", desc: "角色设定档案。", file: "挂面-v1.md" },
+            { name: "萧杳18", desc: "议婚开场角色卡。", file: "萧杳18-v5-议婚开场.md" }
+        ];
+
+        const container = document.getElementById('cardList');
+        
+        characters.forEach(char => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            // 构建卡片内部的 HTML
+            card.innerHTML = `
+                <h2>${char.name}</h2>
+                <p>${char.desc}</p>
+                <a href="${char.file}" download="【时空管理局档案】${char.name}.md" class="btn">下载档案 (.md)</a>
+            `;
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>
