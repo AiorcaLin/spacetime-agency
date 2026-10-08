@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时空管理局 - 档案生成终端</title>
+    <style>
+        :root {
+            --bg-dark: #06080f;
+            --bg-card: rgba(15, 25, 45, 0.7);
+            --primary-glow: #00f3ff;
+            --text-main: #e0e6ed;
+            --text-muted: #8892b0;
+        }
+        body { font-family: 'Courier New', 'Microsoft YaHei', sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 40px 20px; min-height: 100vh; background-image: linear-gradient(rgba(0,243,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,243,255,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { color: #fff; letter-spacing: 5px; text-shadow: 0 0 20px rgba(0, 243, 255, 0.6); font-size: 2.2rem; }
+        .container { max-width: 1000px; margin: 0 auto; display: flex; gap: 30px; flex-wrap: wrap; }
+        .panel { flex: 1; min-width: 300px; background: var(--bg-card); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 4px; padding: 25px; backdrop-filter: blur(10px); position: relative; }
+        .panel::before { content: ''; position: absolute; top: -1px; left: -1px; width: 12px; height: 12px; border: 2px solid var(--primary-glow); border-right: none; border-bottom: none; }
+        label { display: block; margin: 15px 0 5px; color: var(--primary-glow); font-size: 0.9rem; letter-spacing: 1px; }
+        input[type="text"], textarea { width: 100%; padding: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(0, 243, 255, 0.3); color: #fff; font-family: inherit; border-radius: 2px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input[type="text"]:focus, textarea:focus { border-color: var(--primary-glow); box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+        textarea { resize: vertical; min-height: 100px; }
+        .btn { display: block; width: 100%; padding: 14px; margin-top: 25px; background: transparent; border: 1px solid var(--primary-glow); color: var(--primary-glow); font-family: inherit; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: var(--primary-glow); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 243, 255, 0.6); font-weight: bold; }
+        .preview { white-space: pre-wrap; font-size: 0.85rem; color: var(--text-muted); background: rgba(0,0,0,0.4); padding: 15px; border: 1px dashed rgba(0, 243, 255, 0.3); border-radius: 2px; height: 100%; min-height: 400px; overflow-y: auto; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .back-link:hover { color: var(--primary-glow); }
+    </style>
+</head>
+<body>
+    <a href="./index.html" class="back-link">← 返回档案库</a>
+    <div class="header">
+        <h1>档案生成终端</h1>
+    </div>
+
+    <div class="container">
+        <!-- 左侧：表单 -->
+        <div class="panel">
+            <label>角色姓名 (必填)</label>
+            <input type="text" id="name" placeholder="例如：萧珩" oninput="generate()">
+
+            <label>身份/头衔 (必填)</label>
+            <input type="text" id="role" placeholder="例如：大梁开国皇帝" oninput="generate()">
+
+            <label>简短描述 (用于卡片展示)</label>
+            <input type="text" id="desc" placeholder="例如：少年英主，文人帝王。" oninput="generate()">
+
+            <label>基础信息 (一句话概括)</label>
+            <textarea id="basic" placeholder="年龄：28岁&#10;身高：185cm&#10;关键词：少年英主、权谋..." oninput="generate()"></textarea>
+
+            <label>外貌与气质</label>
+            <textarea id="appearance" placeholder="容貌、穿着、体态特征..." oninput="generate()"></textarea>
+
+            <label>性格与内核</label>
+            <textarea id="personality" placeholder="性格特征、行事风格、三观..." oninput="generate()"></textarea>
+
+            <button class="btn" onclick="downloadCard()">生成并下载档案 (.md)</button>
+        </div>
+
+        <!-- 右侧：实时预览 -->
+        <div class="panel">
+            <label style="margin-top: 0;">实时 Markdown 预览</label>
+            <div class="preview" id="preview"></div>
+        </div>
+    </div>
+
+    <script>
+        function generate() {
+            const name = document.getElementById('name').value || '未命名角色';
+            const role = document.getElementById('role').value || '未知身份';
+            const desc = document.getElementById('desc').value || '暂无描述';
+            const basic = document.getElementById('basic').value || '暂无信息';
+            const appearance = document.getElementById('appearance').value || '暂无外貌描写';
+            const personality = document.getElementById('personality').value || '暂无性格描写';
+
+            // 根据你的 Typora 格式拼接 Markdown
+            const md = `# 角色卡：${name}
+
+## 基础信息
+- **身份**：${role}
+- **简介**：${desc}
+- **详细档案**：
+${basic}
+
+## 外貌与气质
+${appearance}
+
+## 性格与内核
+${personality}
+
+---
+*本档案由时空管理局制卡机生成*
+`;
+            document.getElementById('preview').innerText = md;
+            // 将生成的 md 存入一个隐藏变量，供下载使用
+            window.currentMarkdown = md;
+            window.currentName = name;
+        }
+
+        function downloadCard() {
+            if (!window.currentMarkdown) {
+                alert("请先填写角色信息！");
+                return;
+            }
+            // 使用 Blob 生成文件并触发下载
+            const blob = new Blob([window.currentMarkdown], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${window.currentName}-角色卡.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert("档案已生成！你可以将下载的 .md 文件提交给时空管理局进行审核入库。");
+        }
+        
+        // 页面初始化时触发一次
+        generate();
+    </script>
+</body>
+</html>
